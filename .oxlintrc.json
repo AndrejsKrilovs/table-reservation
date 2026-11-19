@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "import"],
+  "categories": { "correctness": "error" },
+  "ignorePatterns": ["target/**", "node_modules/**"],
+  "rules": {
+    "func-style": ["error", "expression"],
+    "prefer-arrow-callback": "error",
+    "import/no-default-export": "error"
+  },
+  "overrides": [
+    { "files": ["vite.config.ts"], "rules": { "import/no-default-export": "off" } }
+  ]
+}

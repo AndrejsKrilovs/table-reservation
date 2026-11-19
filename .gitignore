@@ -1,0 +1,36 @@
+### Maven ###
+target/
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Frontend (Vite) ###
+node_modules/
+# собирается Vite при сборке Maven
+src/main/resources/static/
+
+### Логи ###
+*.log
+
+### Секреты ###
+.env
+.env.*
+!.env.example

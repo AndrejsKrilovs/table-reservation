@@ -1,0 +1,92 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-customer
+      author: Andrejs Krilovs
+      changes:
+        - createTable:
+            tableName: customer
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_customer
+
+              - column:
+                  name: phone
+                  type: varchar(8)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_customer_phone
+
+              - column:
+                  name: first_name
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: last_name
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 2-table-reservation
+      author: Andrejs Krilovs
+      changes:
+        - createTable:
+            tableName: table_reservation
+            columns:
+              - column:
+                  name: reservation_date
+                  type: date
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: table_number
+                  type: smallint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: customer_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+        # Один стол — одна бронь на дату
+        - addPrimaryKey:
+            tableName: table_reservation
+            columnNames: reservation_date, table_number
+            constraintName: pk_table_reservation
+
+        - addForeignKeyConstraint:
+            baseTableName: table_reservation
+            baseColumnNames: customer_id
+            constraintName: fk_reservation_customer
+            referencedTableName: customer
+            referencedColumnNames: id
+
+        - sql:
+            sql: >
+              alter table table_reservation
+              add constraint ck_reservation_table_number
+              check (table_number between 1 and 10)
+
+        - createIndex:
+            tableName: table_reservation
+            indexName: ix_reservation_date
+            columns:
+              - column:
+                  name: reservation_date

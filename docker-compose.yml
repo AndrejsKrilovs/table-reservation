@@ -1,0 +1,50 @@
+# Запуск: создайте рядом файл .env с двумя строками (в git он не попадает), затем docker compose up -d --build
+#   DOMAIN=book.example.com
+#   DB_PASSWORD=длинный-случайный-пароль
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: club
+      POSTGRES_USER: club
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?задайте DB_PASSWORD в .env}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U club -d club"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/club
+      DB_USER: club
+      DB_PASSWORD: ${DB_PASSWORD}
+    expose:
+      - "8080"   # наружу не публикуется, снаружи доступен только caddy
+
+  # HTTPS (сертификат Let's Encrypt выпускается и продлевается автоматически) и проксирование на приложение
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?задайте DOMAIN в .env, например book.example.com}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+
+volumes:
+  db-data:
+  caddy-data:
