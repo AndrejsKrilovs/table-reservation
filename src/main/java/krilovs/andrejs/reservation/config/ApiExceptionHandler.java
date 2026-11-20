@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -46,8 +44,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         var errors = ex.getBindingResult().getFieldErrors().stream().collect(Collectors.groupingBy(
                 FieldError::getField,
                 TreeMap::new,
-                Collectors.mapping(FieldError::getDefaultMessage, Collectors.toCollection(ArrayList::new))));
-        errors.values().forEach(Collections::sort);
+                Collectors.mapping(FieldError::getDefaultMessage, Collectors.joining())));
         return ResponseEntity.badRequest().body(errors);
     }
 
@@ -56,7 +53,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NonNull HttpHeaders headers,
                                                                   @NonNull HttpStatusCode status,
                                                                   @NonNull WebRequest request) {
-        return ResponseEntity.badRequest().body(error("Invalid JSON body"));
+        var message = "";
+        if (ex.getMessage().contains("LocalDate")) {
+            message = "Incorrect date";
+        }
+
+        return ResponseEntity.badRequest().body(error(message.isBlank() ? "Invalid JSON body" : message));
     }
 
     @Override
