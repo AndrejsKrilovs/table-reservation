@@ -1,6 +1,7 @@
 package krilovs.andrejs.reservation.reservation;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import krilovs.andrejs.reservation.model.Customer;
 import krilovs.andrejs.reservation.model.TableReservation;
@@ -48,10 +49,18 @@ public class ReservationService {
     }
 
     @Transactional
-    public void cancel(Short tableNumber, LocalDate date) {
-        var reservation = em.find(TableReservation.class, new TableReservationId(tableNumber, date));
-        if (reservation != null) {
-            em.remove(reservation);
+    public void cancelByPhone(String phone, LocalDate date) {
+        var statement = """
+            delete from TableReservation r
+            where r.id.reservationDate = :date
+              and r.customer.id in (select c.id from Customer c where c.phone = :phone)
+        """;
+        var result = em.createQuery(statement)
+                .setParameter("date", date)
+                .setParameter("phone", phone)
+                .executeUpdate();
+        if (result == 0) {
+            throw new EntityNotFoundException("На этот телефон нет брони на выбранную дату");
         }
     }
 

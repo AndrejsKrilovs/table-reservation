@@ -90,3 +90,12 @@ databaseChangeLog:
             columns:
               - column:
                   name: reservation_date
+
+        - createIndex:
+            tableName: table_reservation
+            indexName: ix_player_reservation_date
+            columns:
+              - column:
+                  name: reservation_date
+              - column:
+                  name: customer_id

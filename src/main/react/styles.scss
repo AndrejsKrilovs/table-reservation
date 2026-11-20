@@ -80,7 +80,8 @@ h1 {
   text-align: center;
 }
 
-form {
+form,
+.panel {
   display: grid;
   gap: 22px;
   padding: 28px;
@@ -321,6 +322,7 @@ input {
 }
 
 button[type='submit'],
+button.primary,
 button.secondary {
   flex: 1;
   padding: 9px 16px;
@@ -334,7 +336,8 @@ button.secondary {
   transition: background 0.12s, border-color 0.12s;
 }
 
-button[type='submit']:hover:not(:disabled) {
+button[type='submit']:hover:not(:disabled),
+button.primary:hover:not(:disabled) {
   background: $accent-hover;
   border-color: $accent-hover;
 }

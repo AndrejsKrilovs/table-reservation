@@ -1,6 +1,7 @@
 package krilovs.andrejs.reservation.config;
 
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -44,7 +45,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         var errors = ex.getBindingResult().getFieldErrors().stream().collect(Collectors.groupingBy(
                 FieldError::getField,
                 TreeMap::new,
-                Collectors.mapping(FieldError::getDefaultMessage, Collectors.joining())));
+                Collectors.mapping(ApiExceptionHandler::messageOf, Collectors.joining("; "))));
         return ResponseEntity.badRequest().body(errors);
     }
 
@@ -55,10 +56,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NonNull WebRequest request) {
         var message = "";
         if (ex.getMessage().contains("LocalDate")) {
-            message = "Incorrect date";
+            message = "Некорректная дата";
         }
 
-        return ResponseEntity.badRequest().body(error(message.isBlank() ? "Invalid JSON body" : message));
+        return ResponseEntity.badRequest().body(error(message.isBlank() ? "Некорректное тело запроса" : message));
     }
 
     @Override
@@ -68,24 +69,45 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                              @NonNull HttpStatusCode statusCode,
                                                              @NonNull WebRequest request) {
         // часть обработчиков (например, неверный тип параметра) сразу передаёт ProblemDetail
-        if (body instanceof ProblemDetail problem) {
-            body = error(Objects.requireNonNullElse(problem.getDetail(), "Request failed"));
-        }
-        else if (Objects.isNull(body) && ex instanceof ErrorResponse errorResponse) {
-            body = error(Objects.requireNonNullElse(errorResponse.getBody().getDetail(), "Request failed"));
+        // тексты стандартных ошибок Spring английские, поэтому подбираем русский по статусу
+        if (body instanceof ProblemDetail || (Objects.isNull(body) && ex instanceof ErrorResponse)) {
+            body = error(messageFor(statusCode));
         }
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class, EntityExistsException.class})
     ResponseEntity<Object> conflict() {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error("Table is already reserved for this date"));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error("Стол уже занят на выбранную дату"));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    ResponseEntity<Object> entityNotFound(EntityNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(error(Objects.requireNonNullElse(e.getMessage(), "Запись не найдена")));
     }
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<Object> unexpected(Exception e) {
         log.error("Unhandled error", e);
-        return ResponseEntity.internalServerError().body(error("Internal server error"));
+        return ResponseEntity.internalServerError().body(error("Внутренняя ошибка сервера"));
+    }
+
+    private static String messageOf(FieldError error) {
+        if (error.isBindingFailure()) {
+            return "Некорректное значение";
+        }
+        return Objects.requireNonNullElse(error.getDefaultMessage(), "Некорректное значение");
+    }
+
+    private static String messageFor(HttpStatusCode status) {
+        return switch (status.value()) {
+            case 400 -> "Некорректный запрос";
+            case 404 -> "Ресурс не найден";
+            case 405 -> "Метод не поддерживается";
+            case 415 -> "Неподдерживаемый формат данных";
+            default -> "Не удалось выполнить запрос";
+        };
     }
 
     private static Map<String, String> error(String message) {

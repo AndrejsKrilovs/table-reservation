@@ -20,7 +20,7 @@ import java.util.Objects;
 /**
  * GET /api/v1/reservations?date=2026-11-20 - брони на выбранную дату
  * POST /api/v1/reservations - создать бронь (новый клиент регистрируется автоматически)
- * DELETE /api/v1/reservations/{tableNumber}/{date} - отменить бронь, например /5/2026-11-20
+ * DELETE /api/v1/reservations/{phone}/{date} - отменить брони клиента на дату, например /20000000/2026-11-20
  * Ошибки превращает в JSON {@link krilovs.andrejs.reservation.config.ApiExceptionHandler}.
  */
 @RestController
@@ -42,9 +42,9 @@ public class ReservationController {
         return reservations.showDateReservations(Objects.requireNonNullElseGet(date, LocalDate::now));
     }
 
-    @DeleteMapping("/{tableNumber}/{date}")
+    @DeleteMapping("/{phone}/{date}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void cancel(@Valid ReservationKey key) {
-        reservations.cancel(key.tableNumber(), key.date());
+    public void cancelByPhone(@Valid ReservationCancelRequest request) {
+        reservations.cancelByPhone(request.phone(), request.date());
     }
 }
