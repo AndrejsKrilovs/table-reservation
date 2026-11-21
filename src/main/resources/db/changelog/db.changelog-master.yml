@@ -91,11 +91,7 @@ databaseChangeLog:
               - column:
                   name: reservation_date
 
-        - createIndex:
+        - addUniqueConstraint:
             tableName: table_reservation
-            indexName: ix_player_reservation_date
-            columns:
-              - column:
-                  name: reservation_date
-              - column:
-                  name: customer_id
+            columnNames: reservation_date, customer_id
+            constraintName: uk_reservation_date_customer

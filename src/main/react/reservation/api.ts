@@ -3,7 +3,7 @@ import type { FieldErrors, Reservation } from './types'
 
 const http = axios.create({ baseURL: '/api/v1/reservations' })
 
-export const fetchReservations = async (date: string) => (await http.get<Reservation[]>('', { params: { date } })).data
+export const fetchReservedTables = async (date: string) => (await http.get<number[]>('', { params: { date } })).data
 
 export const bookTable = async (reservation: Reservation) => (await http.post<Reservation>('', reservation)).data
 

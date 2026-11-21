@@ -65,14 +65,14 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReservationResponse> showDateReservations(LocalDate date) {
+    public List<Short> showDateReservations(LocalDate date) {
         var statement = """
-            select r.id.tableNumber, r.id.reservationDate, c.phone, c.firstName, c.lastName
-            from TableReservation r join r.customer c
+            select r.id.tableNumber
+            from TableReservation r
             where r.id.reservationDate = :date
             order by r.id.tableNumber
         """;
-        return em.createQuery(statement, ReservationResponse.class)
+        return em.createQuery(statement, Short.class)
                 .setParameter("date", date)
                 .getResultList();
     }

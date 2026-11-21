@@ -13,6 +13,7 @@ export const TableGrid = ({ tables, selected, isTaken, onSelect }: Props) => (
         key={table}
         type="button"
         role="radio"
+        disabled={isTaken(table)}
         aria-checked={table === selected}
         className={`table${isTaken(table) ? ' taken' : ''}${table === selected ? ' selected' : ''}`}
         onClick={() => onSelect(table)}

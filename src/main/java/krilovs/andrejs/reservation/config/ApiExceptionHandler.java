@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+    private static final String CUSTOMER_PER_DATE_CONSTRAINT = "uk_reservation_date_customer".toUpperCase();
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -77,7 +79,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class, EntityExistsException.class})
-    ResponseEntity<Object> conflict() {
+    ResponseEntity<Object> conflict(Exception e) {
+        var reason = NestedExceptionUtils.getMostSpecificCause(e).getMessage();
+        if (Objects.nonNull(reason) && reason.contains(CUSTOMER_PER_DATE_CONSTRAINT)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("phone", "На этот телефон уже есть бронь на выбранную дату"));
+        }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error("Стол уже занят на выбранную дату"));
     }
 

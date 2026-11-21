@@ -1,9 +1,8 @@
 import { useEffect, useState, type ChangeEvent, type SubmitEvent } from 'react'
-import { bookTable, errorsOf, fetchReservations } from './api'
+import { bookTable, errorsOf, fetchReservedTables } from './api'
 import { DatePicker, today } from '../components/DatePicker'
 import { Alerts, Errors, Field } from '../components/Field'
 import { TableGrid } from '../components/TableGrid'
-import type { Reservation } from './types'
 import { useAction } from '../useAction'
 
 const TABLES = Array.from({ length: 10 }, (_, i) => i + 1)
@@ -18,7 +17,7 @@ export const BookForm = ({ onDone, onBack }: Props) => {
   const [date, setDate] = useState(today)
   const [table, setTable] = useState<number | null>(null)
   const [form, setForm] = useState({ phone: '', firstName: '', lastName: '' })
-  const [reservations, setReservations] = useState<Reservation[] | null>(null)
+  const [reservedTables, setReservedTables] = useState<number[] | null>(null)
   const [version, setVersion] = useState(0)
   const reload = () => setVersion((v) => v + 1)
 
@@ -29,9 +28,11 @@ export const BookForm = ({ onDone, onBack }: Props) => {
 
   useEffect(() => {
     let ignore = false // ответ на устаревший запрос (дата уже сменилась) отбрасываем
-    fetchReservations(date)
-      .then((list) => {
-        if (!ignore) setReservations(list)
+    fetchReservedTables(date)
+      .then((tables) => {
+        if (ignore) return
+        setReservedTables(tables)
+        setTable((t) => (t !== null && tables.includes(t) ? null : t))
       })
       .catch((e) => {
         if (!ignore) setErrors(errorsOf(e))
@@ -41,12 +42,11 @@ export const BookForm = ({ onDone, onBack }: Props) => {
     }
   }, [date, version, setErrors])
 
-  const isTaken = (t: number) => reservations?.some((r) => r.tableNumber === t) ?? false
-  const selectedTaken = table !== null && isTaken(table)
+  const isTaken = (t: number) => reservedTables?.includes(t) ?? false
 
   const changeDate = (value: string) => {
     setDate(value)
-    setReservations(null)
+    setReservedTables(null)
   }
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
@@ -75,11 +75,10 @@ export const BookForm = ({ onDone, onBack }: Props) => {
             <li className="free">свободен</li>
             <li className="taken">занят</li>
             <li className="count">
-              {reservations ? `свободно ${TABLES.length - reservations.length} из ${TABLES.length}` : 'загружаем…'}
+              {reservedTables ? `свободно ${TABLES.length - reservedTables.length} из ${TABLES.length}` : 'загружаем…'}
             </li>
           </ul>
-          {selectedTaken && <small className="error">Стол {table} уже занят на эту дату. Выберите другой.</small>}
-          <Errors messages={selectedTaken ? undefined : errors.tableNumber} />
+          <Errors messages={errors.tableNumber} />
         </div>
 
         <div className="row">
@@ -125,7 +124,7 @@ export const BookForm = ({ onDone, onBack }: Props) => {
         </div>
 
         <div className="actions">
-          <button type="submit" disabled={busy || selectedTaken}>
+          <button type="submit" disabled={busy}>
             Забронировать
           </button>
           <button type="button" className="secondary" disabled={busy} onClick={onBack}>

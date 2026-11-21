@@ -238,9 +238,13 @@ input {
   cursor: pointer;
   transition: border-color 0.12s, background 0.12s;
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: $accent;
     background: $accent-soft;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
   }
 
   .number {
