@@ -65,7 +65,7 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<Short> showDateReservations(LocalDate date) {
+    public List<Short> showReservedTables(LocalDate date) {
         var statement = """
             select r.id.tableNumber
             from TableReservation r

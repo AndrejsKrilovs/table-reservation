@@ -39,7 +39,7 @@ public class ReservationController {
     @GetMapping
     public List<Short> reservedTables(@RequestParam(required = false)
                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return reservations.showDateReservations(Objects.requireNonNullElseGet(date, LocalDate::now));
+        return reservations.showReservedTables(Objects.requireNonNullElseGet(date, LocalDate::now));
     }
 
     @DeleteMapping("/{phone}/{date}")

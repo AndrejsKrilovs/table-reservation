@@ -1,4 +1,5 @@
 import krilovs.andrejs.reservation.config.AppConfig;
+import krilovs.andrejs.reservation.config.DevDataSeeder;
 import org.eclipse.jetty.ee11.servlet.DefaultServlet;
 import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee11.servlet.ServletHolder;
@@ -32,7 +33,8 @@ void main() throws Exception {
     var server = new Server(Integer.parseInt(spring.getEnvironment().getProperty("PORT", "8080")));
     server.setHandler(context);
     try {
-        server.start();
+        server.start();   // вместе с сервером поднимается и Spring (initOrder у DispatcherServlet)
+        spring.getBean(DevDataSeeder.class).seedIfDev();   // тестовые данные, только на H2
         server.join();
     }
     finally {
