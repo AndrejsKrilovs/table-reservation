@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,7 @@ public class AdminService {
     private EntityManager em;
 
     @Transactional(readOnly = true)
-    public Map<LocalDate, List<ReservationResponse>> showReservations(LocalDate start, LocalDate end) {
+    public TreeMap<LocalDate, List<ReservationResponse>> showReservations(LocalDate start, LocalDate end) {
         var statement = """
             select r.id.tableNumber, r.id.reservationDate, c.phone, c.firstName, c.lastName
             from TableReservation r

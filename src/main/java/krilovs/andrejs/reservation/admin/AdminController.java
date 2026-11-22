@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * GET /api/v1/admin/reservations?start=2026-11-21&end=2026-12-21 - брони за период (включительно), сгруппированные по дате
@@ -21,7 +21,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/reservations")
-    public Map<LocalDate, List<ReservationResponse>> showReservations(@Valid ReservationPeriodRequest period) {
+    public TreeMap<LocalDate, List<ReservationResponse>> showReservations(@Valid ReservationPeriodRequest period) {
         return adminService.showReservations(period.start(), period.end());
     }
 }

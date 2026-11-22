@@ -6,6 +6,7 @@ import io.agroal.api.security.NamePrincipal;
 import io.agroal.api.security.SimplePassword;
 import jakarta.persistence.EntityManagerFactory;
 import liquibase.integration.spring.SpringLiquibase;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategySnakeCaseImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -48,7 +49,7 @@ public class AppConfig {
                         .connectionFactoryConfiguration(factory -> factory
                                 .jdbcUrl(env.getProperty("DB_URL", H2_URL))
                                 .principal(new NamePrincipal(env.getProperty("DB_USER", "sa")))
-                                .credential(new SimplePassword(env.getProperty("DB_PASSWORD", "")))));
+                                .credential(new SimplePassword(env.getProperty("DB_PASSWORD", StringUtils.EMPTY)))));
         return AgroalDataSource.from(config);
     }
 

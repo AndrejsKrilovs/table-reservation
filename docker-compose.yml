@@ -1,6 +1,7 @@
-# Запуск: создайте рядом файл .env с двумя строками (в git он не попадает), затем docker compose up -d --build
+# Запуск: создайте рядом файл .env с тремя строками (в git он не попадает), затем docker compose up -d --build
 #   DOMAIN=book.example.com
 #   DB_PASSWORD=длинный-случайный-пароль
+#   ADMIN_PASSWORD=другой-длинный-пароль
 services:
   db:
     image: postgres:17
@@ -27,6 +28,7 @@ services:
       DB_URL: jdbc:postgresql://db:5432/club
       DB_USER: club
       DB_PASSWORD: ${DB_PASSWORD}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?задайте ADMIN_PASSWORD в .env}
     expose:
       - "8080"   # наружу не публикуется, снаружи доступен только caddy
 

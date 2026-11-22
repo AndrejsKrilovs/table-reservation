@@ -3,6 +3,7 @@ package krilovs.andrejs.reservation.config;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.NestedExceptionUtils;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -56,7 +59,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NonNull HttpHeaders headers,
                                                                   @NonNull HttpStatusCode status,
                                                                   @NonNull WebRequest request) {
-        var message = "";
+        var message = StringUtils.EMPTY;
         if (ex.getMessage().contains("LocalDate")) {
             message = "Некорректная дата";
         }
@@ -88,6 +91,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error("Стол уже занят на выбранную дату"));
     }
 
+    // 401 и 403 приходят сюда из SecurityConfig (фильтр безопасности передаёт исключения в этот же механизм)
+    @ExceptionHandler(AuthenticationException.class)
+    ResponseEntity<Object> unauthorized() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error(messageFor(HttpStatus.UNAUTHORIZED)));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    ResponseEntity<Object> forbidden() {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error(messageFor(HttpStatus.FORBIDDEN)));
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     ResponseEntity<Object> entityNotFound(EntityNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -110,6 +124,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private static String messageFor(HttpStatusCode status) {
         return switch (status.value()) {
             case 400 -> "Некорректный запрос";
+            case 401 -> "Требуется авторизация к этому ресурсу";
+            case 403 -> "Недостаточно прав для этого ресурса";
             case 404 -> "Ресурс не найден";
             case 405 -> "Метод не поддерживается";
             case 415 -> "Неподдерживаемый формат данных";
