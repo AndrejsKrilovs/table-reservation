@@ -1,7 +1,8 @@
 import jakarta.servlet.DispatcherType;
 import krilovs.andrejs.reservation.config.AppConfig;
+import krilovs.andrejs.reservation.config.MainServlet;
+import krilovs.andrejs.reservation.config.RedirectFilter;
 import krilovs.andrejs.reservation.config.DevDataSeeder;
-import org.eclipse.jetty.ee11.servlet.DefaultServlet;
 import org.eclipse.jetty.ee11.servlet.FilterHolder;
 import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee11.servlet.ServletHolder;
@@ -30,11 +31,12 @@ void main() throws Exception {
     context.getSessionHandler().setSameSite(HttpCookie.SameSite.LAX);   // не уходит с чужих сайтов при POST
     // фронтенд: файлы из classpath (src/main/resources/static), их кладёт туда сборка Vite
     context.setBaseResource(ResourceFactory.of(context).newClassLoaderResource("static"));
-    context.setWelcomeFiles(new String[]{"index.html"});
-    context.addServlet(DefaultServlet.class, "/");
+    context.addServlet(MainServlet.class, "/");
 
     // Spring поднимается слушателем до инициализации фильтров и сервлетов: фильтр безопасности берёт бины из него
     context.addEventListener(new ContextLoaderListener(spring));
+    // адресная строка браузера (навигация) на /api/* уводит на главную; фильтр стоит до безопасности
+    context.addFilter(RedirectFilter.class, "/api/*", EnumSet.of(DispatcherType.REQUEST));
     context.addFilter(new FilterHolder(new DelegatingFilterProxy("springSecurityFilterChain")), "/*",
             EnumSet.of(DispatcherType.REQUEST));
     if (AppConfig.isDev(spring.getEnvironment())) {

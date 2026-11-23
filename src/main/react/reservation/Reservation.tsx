@@ -4,7 +4,7 @@ import { CancelForm } from './CancelForm'
 
 type Step = 'menu' | 'book' | 'cancel'
 
-export const App = () => {
+export const Reservation = () => {
   const [step, setStep] = useState<Step>('menu')
   const [notice, setNotice] = useState<string | null>(null)
 

@@ -20,7 +20,7 @@ import java.util.Random;
 import java.util.stream.IntStream;
 
 /**
- * Заполняет базу тестовыми данными при старте: клиенты и брони на случайные даты ближайших месяцев.
+ * Заполняет базу тестовыми данными при старте: клиенты и брони на случайные столы и даты ближайших месяцев (часть столов остаётся свободной).
  * Работает только на H2 в памяти (см. {@link AppConfig#isDev}), боевая база не затрагивается.
  * <p>
  * Вставка идёт обычным JDBC-пакетом, а не через Hibernate: в режиме разработки включён show_sql,
@@ -31,7 +31,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class DevDataSeeder {
     private static final int CUSTOMERS = 100;
-    private static final int RESERVATIONS = 1000;
+    private static final double OCCUPANCY = 0.3; // доля занятых мест, остальные столы остаются свободными
     private static final int MONTHS = 3;
     private static final int TABLES = 10; // как в check-ограничении таблицы table_reservation
 
@@ -70,18 +70,14 @@ public class DevDataSeeder {
         jdbc.batchUpdate("insert into customer (phone, first_name, last_name) values (?, ?, ?)", customers);
         var customerIds = jdbc.queryForList("select id from customer", Long.class);
 
-        // одна бронь на стол и дату: всех возможных мест не больше, чем столов x дней
+        // одна бронь на стол и дату; занимаем только часть мест, чтобы в каждый день были и свободные столы
         var today = LocalDate.now();
         var slots = new ArrayList<Slot>();
         today.datesUntil(today.plusMonths(MONTHS))
                 .forEach(date -> IntStream.rangeClosed(1, TABLES).forEach(table -> slots.add(new Slot(date, (short) table))));
         Collections.shuffle(slots, random);
 
-        var count = Math.min(RESERVATIONS, slots.size());
-        if (count < RESERVATIONS) {
-            log.warn("Тестовых броней создано {} из {}: на {} месяца(ев) вперёд всего {} мест ({} столов x дней)",
-                    count, RESERVATIONS, MONTHS, slots.size(), TABLES);
-        }
+        var count = (int) Math.round(slots.size() * OCCUPANCY);
 
         // один человек - одна бронь на дату: запоминаем, кто уже занят в этот день
         var busyByDate = new HashMap<LocalDate, HashSet<Long>>();
@@ -98,6 +94,7 @@ public class DevDataSeeder {
         jdbc.batchUpdate("insert into table_reservation (reservation_date, table_number, created_at, customer_id) "
                 + "values (?, ?, ?, ?)", reservations);
 
-        log.info("Тестовые данные: {} клиентов, {} броней на {} месяца(ев) вперёд", customerIds.size(), count, MONTHS);
+        log.info("Тестовые данные: {} клиентов, {} броней из {} мест на {} месяца(ев) вперёд",
+                customerIds.size(), count, slots.size(), MONTHS);
     }
 }

@@ -105,7 +105,7 @@ public class SecurityConfig {
                         .permitAll())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/admin/**").hasRole(ADMIN_ROLE)
+                        .requestMatchers("/api/v1/admin/**", "/admin-console").hasRole(ADMIN_ROLE)
                         .anyRequest().permitAll())
 
                 .exceptionHandling(exception -> exception
