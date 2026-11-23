@@ -1,0 +1,102 @@
+@use '../styles/variables' as *;
+
+// --- админка: таблица броней ---
+
+.booking-days {
+  display: grid;
+  gap: 20px;
+}
+
+.booking-day {
+  overflow: hidden; // скругление углов рамки обрезает и шапку таблицы
+  border: 1px solid $border;
+  border-radius: 8px;
+
+  h2 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2px 12px;
+    margin: 0;
+    padding: 10px 14px;
+    background: $bg;
+    border-bottom: 1px solid $border;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: capitalize;
+
+    small {
+      color: $muted;
+      font-size: 0.8rem;
+      font-weight: 400;
+      text-transform: none;
+    }
+  }
+}
+
+.booking-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 9px 14px;
+    text-align: left;
+  }
+
+  th {
+    color: $muted;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  tbody tr {
+    border-top: 1px solid $border;
+    transition: background 0.12s;
+
+    &:hover {
+      background: $accent-soft;
+    }
+  }
+
+  th:first-child,
+  td:first-child {
+    width: 64px;
+    text-align: center;
+  }
+
+  td:last-child,
+  th:last-child {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  a {
+    color: $text;
+    text-decoration: none;
+
+    &:hover {
+      color: $accent;
+    }
+  }
+
+  .table-no {
+    display: inline-block;
+    min-width: 28px;
+    padding: 1px 8px;
+    border: 1px solid;
+    border-radius: 6px;
+    font-weight: 600;
+    @include tint($accent, $accent-soft, $accent-ring);
+  }
+
+  @include narrow {
+    th,
+    td {
+      padding: 8px 10px;
+    }
+  }
+}

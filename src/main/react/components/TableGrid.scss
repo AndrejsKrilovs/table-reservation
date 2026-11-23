@@ -1,0 +1,93 @@
+@use '../styles/variables' as *;
+
+// --- схема зала ---
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: 8px;
+}
+
+.table {
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+  padding: 10px 4px 8px;
+  border: 1px solid $border-strong;
+  border-radius: 6px;
+  background: $panel;
+  color: $text;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+
+  &:hover:not(:disabled) {
+    border-color: $accent;
+    background: $accent-soft;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  .number {
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .status {
+    min-height: 1em;
+    font-size: 0.68rem;
+    color: $muted;
+  }
+
+  &.taken {
+    background: $taken;
+    border-style: dashed;
+    color: $muted;
+  }
+
+  &.selected,
+  &.selected:hover {
+    background: $accent;
+    border-color: $accent;
+    color: #fff;
+
+    .status {
+      color: #fff;
+    }
+  }
+}
+
+// легенда: маркеры повторяют вид ячеек
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: $muted;
+  font-size: 0.8rem;
+
+  li:not(.count)::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    border: 1px solid $border-strong;
+    border-radius: 3px;
+    background: $panel;
+    vertical-align: middle;
+  }
+
+  li.taken::before {
+    border: 1px dashed $muted;
+    background: $taken;
+  }
+
+  .count {
+    margin-left: auto;
+  }
+}

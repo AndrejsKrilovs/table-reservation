@@ -1,0 +1,44 @@
+@use '../styles/variables' as *;
+
+// форма под шапкой: отступ сверху, чтобы не слипалась с заголовком и кнопкой (на планшете у h1 нет нижнего отступа)
+form.admin_data {
+  margin-top: 24px;
+}
+
+// страница администратора: на телефоне, как главная (всё в колонку), на планшете заголовок и кнопка в одной строке
+div.admin_header {
+  // кнопка без панели: на телефоне и десктопе на всю ширину
+  button {
+    width: 100%;
+  }
+
+  @include tablet {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    h1 {
+      margin: 0;
+    }
+
+    button {
+      width: auto; // на планшете кнопка стоит в одной строке с заголовком
+    }
+
+    .notice {
+      flex-basis: 100%; // ошибки под строкой с заголовком и кнопкой
+    }
+  }
+
+  // на больших экранах страница шире и крупнее, чтобы не терялась на пустом поле
+  @include large {
+    max-width: 720px;
+    padding-top: 56px;
+
+    h1 {
+      font-size: 2rem;
+    }
+  }
+}

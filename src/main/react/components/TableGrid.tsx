@@ -1,3 +1,5 @@
+import './TableGrid.scss'
+
 interface Props {
   tables: number[]
   selected: number | null

@@ -9,3 +9,5 @@ export interface Reservation {
 
 /** Ответ 400 при проверке данных: {"поле": ["сообщение", ...]}. */
 export type FieldErrors = Record<string, string[]>
+
+export type ReservationsByDate = Record<string, Reservation[]>

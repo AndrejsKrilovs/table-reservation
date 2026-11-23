@@ -91,6 +91,7 @@ public class SecurityConfig {
                 .requestCache(RequestCacheConfigurer::disable)
 
                 .formLogin(form -> form
+                        .loginPage("/admin-console")
                         .loginProcessingUrl("/api/v1/login")
                         .successHandler((_, response, _) -> response.setStatus(HttpServletResponse.SC_OK))
                         .failureHandler(unauthorized)
@@ -105,7 +106,7 @@ public class SecurityConfig {
                         .permitAll())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/admin/**", "/admin-console").hasRole(ADMIN_ROLE)
+                        .requestMatchers("/api/v1/admin/**").hasRole(ADMIN_ROLE)
                         .anyRequest().permitAll())
 
                 .exceptionHandling(exception -> exception

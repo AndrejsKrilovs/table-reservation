@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import './DatePicker.scss'
 
 const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 

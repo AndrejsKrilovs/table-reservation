@@ -1,0 +1,68 @@
+// Палитра IntelliJ IDEA (New UI, светлая тема)
+$bg: #f7f8fa;
+$panel: #fff;
+$border: #ebecf0;
+$border-strong: #ced0d6;
+$text: #27282e;
+$muted: #6c707e;
+$placeholder: #a8adbd;
+
+$accent: #3574f0;
+$accent-hover: #315fbd;
+$accent-soft: #edf3ff;
+$accent-ring: #d4e2ff;
+
+$ok: #208a3c;
+$ok-soft: #f2fcf3;
+$ok-border: #5fb865;
+
+$danger: #db3b4b;
+$danger-soft: #fff2f5;
+$danger-border: #f2a5ad;
+
+$taken: $border;
+
+@mixin narrow {
+  @media (max-width: 480px) {
+    @content;
+  }
+}
+
+// планшеты (в том числе iPad Pro: 1024px в портрете, 1366px в ландшафте) и большие экраны: всё выше телефона
+@mixin tablet {
+  @media (min-width: 481px) {
+    @content;
+  }
+}
+
+// большие экраны: iPad Pro в ландшафте, ноутбуки, мониторы
+@mixin large {
+  @media (min-width: 1025px) {
+    @content;
+  }
+}
+
+// общий вид поля ввода и поля даты
+@mixin control {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid $border-strong;
+  border-radius: 6px;
+  background: $panel;
+  color: $text;
+  font: inherit;
+  transition: border-color 0.12s, box-shadow 0.12s;
+
+  &:focus-visible,
+  &[aria-expanded='true'] {
+    outline: none;
+    border-color: $accent;
+    box-shadow: 0 0 0 3px $accent-ring;
+  }
+}
+
+@mixin tint($color, $background, $border) {
+  color: $color;
+  background: $background;
+  border-color: $border;
+}
