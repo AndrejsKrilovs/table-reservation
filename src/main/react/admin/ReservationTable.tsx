@@ -4,18 +4,16 @@ import './ReservationTable.scss'
 const title = (date: string) =>
   new Date(`${date}T00:00:00`).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 
-/** Брони по дням: для каждой даты своя таблица «стол - гость - телефон». */
+/** Брони по дням: для каждой даты свой раскрывающийся блок с таблицей «стол - гость - телефон». */
 export const ReservationTable = ({ reservations }: { reservations: ReservationsByDate }) => {
   const days = Object.entries(reservations)
   if (days.length === 0) return <p className="notice">За выбранный период броней нет</p>
 
   return (
     <div className="booking-days">
-      {days.map(([date, items]) => (
-        <section key={date} className="booking-day">
-          <h2>
-            {title(date)}
-          </h2>
+      {days.map(([date, items], index) => (
+        <details key={date} className="booking-day" open={index === 0}>
+          <summary>{title(date)}</summary>
           <table className="booking-table">
             <thead>
               <tr>
@@ -36,13 +34,13 @@ export const ReservationTable = ({ reservations }: { reservations: ReservationsB
                       {r.firstName} {r.lastName}
                     </td>
                     <td>
-                      <a href={`tel:${r.phone}`}>{r.phone}</a>
+                      <a href={`https://wa.me/371${r.phone}`}>{r.phone}</a>
                     </td>
                   </tr>
                 ))}
             </tbody>
           </table>
-        </section>
+        </details>
       ))}
     </div>
   )

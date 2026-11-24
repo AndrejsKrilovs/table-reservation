@@ -23,5 +23,9 @@
     "sass": "^1.108.2",
     "typescript": "^7.0.2",
     "vite": "^8.3.8"
+  },
+  "allowScripts": {
+    "fsevents": false,
+    "@parcel/watcher": false
   }
 }

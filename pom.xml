@@ -128,6 +128,8 @@
     </dependencies>
 
     <build>
+        <!-- имя итогового jar: target/app.jar -->
+        <finalName>app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -159,7 +161,6 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
-                    <finalName>app</finalName>
                     <archive>
                         <manifest>
                             <mainClass>Main</mainClass>
