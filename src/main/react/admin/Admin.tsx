@@ -2,9 +2,9 @@ import { isAxiosError } from 'axios'
 import { useEffect, useState } from 'react'
 import { DatePicker, today } from '../components/DatePicker'
 import { Alerts } from '../components/Field'
-import { ReservationsByDate } from '../types'
+import type { Reservation, ReservationsByDate } from '../types'
 import { errorsOf, useAction } from '../useAction'
-import { fetchReservations, logout } from './api'
+import { cancelReservation, fetchReservations, logout } from './api'
 import { LoginModal } from './LoginModal'
 import { ReservationTable } from './ReservationTable'
 import './Admin.scss'
@@ -58,6 +58,14 @@ export const Admin = () => {
     })
   }
 
+  const onCancel = (r: Reservation) => {
+    if (!window.confirm(`Отменить бронь: стол ${r.tableNumber}, ${r.firstName} ${r.lastName}?`)) return
+    run(async () => {
+      await cancelReservation(r.phone, r.date)
+      setVersion((v) => v + 1) // перезагружаем список
+    })
+  }
+
   if (loggedIn === null) return null
   if (!loggedIn) return <LoginModal onSuccess={() => setVersion((v) => v + 1)} />
 
@@ -81,7 +89,7 @@ export const Admin = () => {
             <DatePicker value={end} min={start} onChange={setEnd} />
           </div>
         </div>
-        {reservations && <ReservationTable reservations={reservations} />}
+        {reservations && <ReservationTable reservations={reservations} busy={busy} onCancel={onCancel} />}
       </form>
     </main>
   )

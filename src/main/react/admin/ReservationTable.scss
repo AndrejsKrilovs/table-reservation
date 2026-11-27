@@ -94,10 +94,40 @@
     text-align: center;
   }
 
-  td:last-child,
-  th:last-child {
-    text-align: right;
+  td:nth-child(3) {
+    text-align: left;
     font-variant-numeric: tabular-nums;
+  }
+
+  td:last-child {
+    width: 1%;
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  th:last-child {
+    text-align: left;
+  }
+
+  .cancel-btn {
+    padding: 4px 10px;
+    border: 1px solid #d64545;
+    border-radius: 6px;
+    background: transparent;
+    color: #d64545;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+
+    &:hover:not(:disabled) {
+      background: #d64545;
+      color: #fff;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
   }
 
   a {

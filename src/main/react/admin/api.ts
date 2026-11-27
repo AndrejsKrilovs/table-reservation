@@ -9,3 +9,7 @@ export const logout = () => http.post('/logout')
 
 export const fetchReservations = async (start: string, end: string) =>
   (await http.get<ReservationsByDate>('/admin/reservations', { params: { start, end } })).data
+
+
+export const cancelReservation = (phone: string, date: string) =>
+  http.delete(`/reservations/${encodeURIComponent(phone)}/${date}`)
