@@ -3,7 +3,7 @@ import { bookTable, fetchReservedTables } from './api'
 import { DatePicker, today } from '../components/DatePicker'
 import { Alerts, Errors, Field } from '../components/Field'
 import { TableGrid } from '../components/TableGrid'
-import {errorsOf, useAction} from '../useAction'
+import { errorsOf, useAction } from '../useAction'
 
 const TABLES = Array.from({ length: 10 }, (_, i) => i + 1)
 

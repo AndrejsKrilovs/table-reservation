@@ -6,6 +6,7 @@ import krilovs.andrejs.reservation.model.MenuSection;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ public class MenuService {
         """;
         return em.createQuery(statement, MenuResponse.class)
                 .getResultStream()
+                .sorted(Comparator.comparing(MenuResponse::price))
                 .collect(Collectors.groupingBy(MenuResponse::section, TreeMap::new, Collectors.toList()));
     }
 }

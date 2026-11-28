@@ -85,7 +85,7 @@ export const Admin = () => {
         <div className="field">
           <span>Выберите период, за который показать резервации</span>
           <div className="row">
-            <DatePicker value={start} min={'2026-11-01'} onChange={changeStart} />
+            <DatePicker value={start} min={start} onChange={changeStart} />
             <DatePicker value={end} min={start} onChange={setEnd} />
           </div>
         </div>

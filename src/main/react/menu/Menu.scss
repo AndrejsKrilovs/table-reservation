@@ -1,0 +1,73 @@
+@use '../styles/variables' as *;
+
+.menu {
+  // колонки собираются в Menu.tsx; блок по центру, колонки равной ширины
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px 64px; // боковые отступы сохраняются на любой ширине
+
+  .menu-column {
+    display: grid;
+    flex: 1 1 0;
+    gap: 20px;
+    min-width: 0; // длинные названия не растягивают колонку
+  }
+
+  .panel {
+    padding: 20px;
+    min-width: 0;
+  }
+
+  h2 {
+    margin: 0;
+    color: $accent;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  ul {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid $border;
+
+    &:first-child {
+      border-top: 0;
+    }
+
+    > div {
+      display: grid;
+    }
+  }
+}
+
+.menu-name,
+.menu-price {
+  font-weight: 600;
+}
+
+.menu-desc,
+.menu-volume {
+  color: $muted;
+  font-size: 0.85rem;
+}
+
+.menu-price {
+  min-width: 64px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

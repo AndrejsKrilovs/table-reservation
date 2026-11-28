@@ -21,6 +21,11 @@ main {
   padding: 40px 16px 64px;
 }
 
+// под бронированием идёт меню: нижний отступ меньше, чтобы между блоками не было пустоты
+main.reservation {
+  padding-bottom: 24px;
+}
+
 h1 {
   margin: 0 0 24px;
   font-size: 1.7rem;
@@ -74,5 +79,25 @@ input {
 
   &::placeholder {
     color: $placeholder;
+  }
+}
+
+.club-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 14px 24px;
+  background: rgba($night, 0.92);
+  backdrop-filter: blur(6px);
+
+  .club-logo {
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+  }
+
+  @include narrow {
+    padding: 10px 16px;
   }
 }

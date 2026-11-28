@@ -19,7 +19,7 @@ export const Reservation = () => {
   }
 
   return (
-    <main>
+    <main className="reservation">
       <h1>Резервация/Отмена столов</h1>
 
       {step === 'menu' && (

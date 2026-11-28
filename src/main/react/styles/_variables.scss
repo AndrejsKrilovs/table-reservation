@@ -22,6 +22,9 @@ $danger-border: #f2a5ad;
 
 $taken: $border;
 
+// ночной клуб: тёмный фон шапки
+$night: #14151a;
+
 @mixin narrow {
   @media (max-width: 480px) {
     @content;
