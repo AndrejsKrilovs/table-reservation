@@ -4,7 +4,9 @@ import io.agroal.api.AgroalDataSource;
 import io.agroal.api.configuration.supplier.AgroalDataSourceConfigurationSupplier;
 import io.agroal.api.security.NamePrincipal;
 import io.agroal.api.security.SimplePassword;
+import com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.SharedCacheMode;
 import liquibase.integration.spring.SpringLiquibase;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategySnakeCaseImpl;
@@ -69,9 +71,15 @@ public class AppConfig {
         emf.setDataSource(dataSource);
         emf.setPackagesToScan("krilovs.andrejs.reservation.model");
         emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        // кеширование только того, что явно помечено (запросы с hint cacheable, сущности с @Cacheable)
+        emf.setSharedCacheMode(SharedCacheMode.ENABLE_SELECTIVE);
 
         var props = new Properties();
         props.put("hibernate.physical_naming_strategy", PhysicalNamingStrategySnakeCaseImpl.class.getName());
+        props.put("hibernate.cache.use_query_cache", "true");
+        props.put("hibernate.cache.region.factory_class", "jcache");
+        props.put("hibernate.javax.cache.provider", CaffeineCachingProvider.class.getName());
+        props.put("hibernate.javax.cache.missing_cache_strategy", "create");
         props.put("hibernate.show_sql", String.valueOf(isDev(env))); // SQL в лог только при разработке
         emf.setJpaProperties(props);
         return emf;

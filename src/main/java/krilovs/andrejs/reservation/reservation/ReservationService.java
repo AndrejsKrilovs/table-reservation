@@ -8,6 +8,7 @@ import krilovs.andrejs.reservation.model.TableReservation;
 import krilovs.andrejs.reservation.model.TableReservationId;
 import org.hibernate.KeyType;
 import org.hibernate.Session;
+import org.hibernate.jpa.HibernateHints;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,6 +75,7 @@ public class ReservationService {
         """;
         return em.createQuery(statement, Short.class)
                 .setParameter("date", date)
+                .setHint(HibernateHints.HINT_CACHEABLE, true) // кеш запросов: сбрасывается при любой брони или отмене
                 .getResultList();
     }
 }
