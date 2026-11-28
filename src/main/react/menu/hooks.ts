@@ -18,18 +18,3 @@ export const useMenu = () => {
 
   return menu
 }
-
-// число колонок по ширине экрана (в тех же точках, что и в Menu.scss)
-const columnsFor = (width: number) => (width >= 900 ? 3 : width >= 481 ? 2 : 1)
-
-export const useColumnCount = () => {
-  const [count, setCount] = useState(() => columnsFor(window.innerWidth))
-
-  useEffect(() => {
-    const onResize = () => setCount(columnsFor(window.innerWidth))
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
-
-  return count
-}

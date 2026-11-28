@@ -81,7 +81,7 @@ export const BookForm = ({ onDone, onBack }: Props) => {
           <Errors messages={errors.tableNumber} />
         </div>
 
-        <div className="row">
+        <div className="row fields">
           <Field label="Имя" errors={errors.firstName}>
             <input
               name="firstName"
@@ -102,9 +102,7 @@ export const BookForm = ({ onDone, onBack }: Props) => {
               autoComplete="family-name"
             />
           </Field>
-        </div>
 
-        <div className="row">
           <Field label="Телефон для связи" errors={errors.phone}>
             <input
               name="phone"
@@ -121,15 +119,14 @@ export const BookForm = ({ onDone, onBack }: Props) => {
             <DatePicker value={date} min={today()} onChange={changeDate} />
             <Errors messages={errors.date} />
           </div>
-        </div>
-
-        <div className="actions">
-          <button type="submit" disabled={busy}>
-            Забронировать
-          </button>
-          <button type="button" className="secondary" disabled={busy} onClick={onBack}>
-            Назад
-          </button>
+          <div className="actions">
+            <button type="submit" disabled={busy}>
+              Забронировать
+            </button>
+            <button type="button" className="secondary" disabled={busy} onClick={onBack}>
+              Назад
+            </button>
+          </div>
         </div>
       </form>
 

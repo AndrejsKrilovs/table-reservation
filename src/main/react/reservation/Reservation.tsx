@@ -20,12 +20,10 @@ export const Reservation = () => {
 
   return (
     <main className="reservation">
-      <h1>Резервация/Отмена столов</h1>
-
       {step === 'menu' && (
         <div className="panel actions">
           <button type="button" className="primary" onClick={() => open('book')}>
-            Забронировать
+            Забронировать стол
           </button>
           <button type="button" className="secondary" onClick={() => open('cancel')}>
             Отменить бронирование

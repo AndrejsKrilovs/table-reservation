@@ -1,25 +1,25 @@
 @use '../styles/variables' as *;
 
 .menu {
-  // колонки собираются в Menu.tsx; блок по центру, колонки равной ширины
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
-  max-width: 1120px;
+  // колонки собирает браузер: разделы идут по столбцам и не разрываются между ними
+  column-count: 1;
+  column-gap: 20px;
+  max-width: $content-width;
   margin: 0 auto;
-  padding: 0 16px 64px; // боковые отступы сохраняются на любой ширине
+  padding: 0 $gutter 64px;
 
-  .menu-column {
-    display: grid;
-    flex: 1 1 0;
-    gap: 20px;
-    min-width: 0; // длинные названия не растягивают колонку
+  @include tablet {
+    column-count: 2;
+  }
+
+  @media (min-width: 900px) {
+    column-count: 3;
   }
 
   .panel {
+    margin-bottom: 20px;
     padding: 20px;
-    min-width: 0;
+    break-inside: avoid;
   }
 
   h2 {
@@ -31,7 +31,6 @@
   }
 
   ul {
-    display: grid;
     margin: 0;
     padding: 0;
     list-style: none;
