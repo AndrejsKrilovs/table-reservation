@@ -95,3 +95,62 @@ databaseChangeLog:
             tableName: table_reservation
             columnNames: reservation_date, customer_id
             constraintName: uk_reservation_date_customer
+
+  - changeSet:
+      id: 3-menu
+      author: Andrejs Krilovs
+      changes:
+        - createTable:
+            tableName: menu_items
+            columns:
+              - column:
+                  name: section
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: item_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: varchar(500)
+
+              - column:
+                  name: volume
+                  type: double
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: price
+                  type: numeric(5,2)
+                  constraints:
+                    nullable: false
+
+        # Позиция уникальна в разделе
+        - addPrimaryKey:
+            tableName: menu_items
+            columnNames: section, item_name
+            constraintName: pk_menu_items
+
+        - sql:
+            sql: >
+              alter table menu_items
+              add constraint ck_menu_item_section
+              check (section in ('COCKTAILS', 'DRINKS', 'BEER_AND_WINE', 'NON_ALCOHOLIC'))
+
+        - sql:
+            sql: >
+              alter table menu_items
+              add constraint ck_menu_item_volume
+              check (volume > 0 and volume <= 2)
+
+        - sql:
+            sql: >
+              alter table menu_items
+              add constraint ck_menu_item_price
+              check (price >= 0)

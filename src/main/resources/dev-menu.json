@@ -1,0 +1,148 @@
+[
+  {
+    "section": "COCKTAILS",
+    "name": "Мохито",
+    "description": "ром, лайм, мята, содовая",
+    "volume": 0.3,
+    "price": 9
+  },
+  {
+    "section": "COCKTAILS",
+    "name": "Маргарита",
+    "description": "текила, трипл-сек, лайм",
+    "volume": 0.2,
+    "price": 9.5
+  },
+  {
+    "section": "COCKTAILS",
+    "name": "Негрони",
+    "description": "джин, кампари, красный вермут",
+    "volume": 0.12,
+    "price": 10
+  },
+  {
+    "section": "COCKTAILS",
+    "name": "Олд Фэшнд",
+    "description": "бурбон, сахар, ангостура",
+    "volume": 0.12,
+    "price": 11
+  },
+  {
+    "section": "COCKTAILS",
+    "name": "Космополитан",
+    "description": "водка, клюква, лайм, трипл-сек",
+    "volume": 0.15,
+    "price": 9.5
+  },
+  {
+    "section": "COCKTAILS",
+    "name": "Неоновая ночь",
+    "description": "джин, голубой кюрасао, тоник, лимон",
+    "volume": 0.25,
+    "price": 11
+  },
+  {
+    "section": "COCKTAILS",
+    "name": "Дымный манго",
+    "description": "мескаль, манго, чили, лайм",
+    "volume": 0.2,
+    "price": 12
+  },
+  {
+    "section": "COCKTAILS",
+    "name": "Чёрный бархат",
+    "description": "виски, кофейный ликёр, ваниль",
+    "volume": 0.15,
+    "price": 12
+  },
+  {
+    "section": "DRINKS",
+    "name": "Водка",
+    "volume": 0.05,
+    "price": 4
+  },
+  {
+    "section": "DRINKS",
+    "name": "Виски",
+    "volume": 0.05,
+    "price": 6
+  },
+  {
+    "section": "DRINKS",
+    "name": "Ром",
+    "volume": 0.05,
+    "price": 6
+  },
+  {
+    "section": "DRINKS",
+    "name": "Джин",
+    "volume": 0.05,
+    "price": 5.5
+  },
+  {
+    "section": "DRINKS",
+    "name": "Текила",
+    "volume": 0.05,
+    "price": 6
+  },
+  {
+    "section": "BEER_AND_WINE",
+    "name": "Светлое пиво",
+    "volume": 0.5,
+    "price": 4.5
+  },
+  {
+    "section": "BEER_AND_WINE",
+    "name": "Тёмное пиво",
+    "volume": 0.5,
+    "price": 5
+  },
+  {
+    "section": "BEER_AND_WINE",
+    "name": "Красное вино",
+    "volume": 0.15,
+    "price": 6
+  },
+  {
+    "section": "BEER_AND_WINE",
+    "name": "Белое вино",
+    "volume": 0.15,
+    "price": 6
+  },
+  {
+    "section": "BEER_AND_WINE",
+    "name": "Просекко",
+    "volume": 0.15,
+    "price": 7
+  },
+  {
+    "section": "NON_ALCOHOLIC",
+    "name": "Кола / Спрайт",
+    "volume": 0.33,
+    "price": 3
+  },
+  {
+    "section": "NON_ALCOHOLIC",
+    "name": "Сок в ассортименте",
+    "volume": 0.25,
+    "price": 3
+  },
+  {
+    "section": "NON_ALCOHOLIC",
+    "name": "Энергетик",
+    "volume": 0.25,
+    "price": 4
+  },
+  {
+    "section": "NON_ALCOHOLIC",
+    "name": "Лимонад дня",
+    "volume": 0.4,
+    "price": 4.5
+  },
+  {
+    "section": "NON_ALCOHOLIC",
+    "name": "Вода",
+    "volume": 0.5,
+    "price": 2
+  }
+]

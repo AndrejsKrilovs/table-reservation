@@ -1,6 +1,9 @@
 package krilovs.andrejs.reservation.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,6 +12,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -42,6 +48,10 @@ public class DevDataSeeder {
             "Иванов", "Петров", "Сидоров", "Смирнов", "Кузнецов", "Попов", "Васильев", "Соколов", "Михайлов", "Новиков",
             "Фёдоров", "Морозов", "Волков", "Алексеев", "Лебедев", "Семёнов", "Егоров", "Павлов", "Козлов", "Степанов");
 
+    /** Позиция меню из dev-menu.json; поля соответствуют колонкам menu_items (объём в литрах). */
+    private record MenuSeedItem(String section, String name, String description, double volume, BigDecimal price) {
+    }
+
     private record Slot(LocalDate date, short table) {
     }
 
@@ -55,7 +65,25 @@ public class DevDataSeeder {
             return;
         }
         var jdbc = new JdbcTemplate(dataSource);
-        new TransactionTemplate(transactionManager).executeWithoutResult(_ -> seed(jdbc));
+        new TransactionTemplate(transactionManager).executeWithoutResult(_ -> {
+            seedMenu(jdbc);
+            seed(jdbc);
+        });
+    }
+
+    /** Меню: позиции читаются из dev-menu.json; ограничения таблицы (объём 0-2 л, цена больше 0) проверяет сама база. */
+    private void seedMenu(JdbcTemplate jdbc) {
+        List<MenuSeedItem> items;
+        try (var in = new ClassPathResource("dev-menu.json").getInputStream()) {
+            items = JsonMapper.builder().build().readValue(in, new TypeReference<>() {});
+        } catch (IOException e) {
+            throw new UncheckedIOException("Не удалось прочитать dev-menu.json", e);
+        }
+        jdbc.batchUpdate("insert into menu_items (section, item_name, description, volume, price) values (?, ?, ?, ?, ?)",
+                items.stream()
+                        .map(i -> new Object[]{i.section(), i.name(), i.description(), i.volume(), i.price()})
+                        .toList());
+        log.info("Тестовое меню: {} позиций", items.size());
     }
 
     private void seed(JdbcTemplate jdbc) {
