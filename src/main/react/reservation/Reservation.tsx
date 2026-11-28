@@ -1,22 +1,9 @@
-import { useState } from 'react'
 import { BookForm } from './BookForm'
 import { CancelForm } from './CancelForm'
-
-type Step = 'menu' | 'book' | 'cancel'
+import { useReservationSteps } from './hooks'
 
 export const Reservation = () => {
-  const [step, setStep] = useState<Step>('menu')
-  const [notice, setNotice] = useState<string | null>(null)
-
-  const open = (next: Step) => {
-    setNotice(null)
-    setStep(next)
-  }
-  // после успешной брони или отмены возвращаемся в меню и показываем результат
-  const done = (message: string) => {
-    setNotice(message)
-    setStep('menu')
-  }
+  const { step, notice, open, done } = useReservationSteps()
 
   return (
     <main className="reservation">

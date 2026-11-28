@@ -1,22 +1,10 @@
-import { useState, type SubmitEvent } from 'react'
 import { Alerts, Field } from '../components/Field'
-import { useAction } from '../useAction'
-import { login } from './api'
+import { useLogin } from './hooks'
 import './LoginModal.scss'
 
 /** Окно входа администратора: показывается поверх страницы, пока нет сессии. */
 export const LoginModal = ({ onSuccess }: { onSuccess: () => void }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const { busy, errors, run } = useAction()
-
-  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    run(async () => {
-      await login(username, password)
-      onSuccess()
-    })
-  }
+  const { username, setUsername, password, setPassword, busy, errors, handleSubmit } = useLogin(onSuccess)
 
   return (
     <div className="modal-backdrop">

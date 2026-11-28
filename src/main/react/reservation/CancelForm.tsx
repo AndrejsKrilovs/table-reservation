@@ -1,8 +1,7 @@
-import { useState, type SubmitEvent } from 'react'
-import { cancelReservation } from './api'
-import { DatePicker, today } from '../components/DatePicker'
+import { useCancelForm } from './hooks'
+import { DatePicker } from '../components/DatePicker'
+import { today } from '../components/hooks'
 import { Alerts, Errors, Field } from '../components/Field'
-import { useAction } from '../useAction'
 
 interface Props {
   onDone: (message: string) => void
@@ -11,18 +10,7 @@ interface Props {
 
 /** Шаг «Отменить бронирование»: телефон и дата. */
 export const CancelForm = ({ onDone, onBack }: Props) => {
-  const [phone, setPhone] = useState('')
-  const [date, setDate] = useState(today)
-  const { busy, errors, run } = useAction()
-
-  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (!window.confirm(`Отменить бронь на ${date} для телефона ${phone}?`)) return
-    run(async () => {
-      await cancelReservation(phone, date)
-      onDone(`Бронь на ${date} для телефона ${phone} отменена`)
-    })
-  }
+  const { phone, setPhone, date, setDate, busy, errors, handleSubmit } = useCancelForm(onDone)
 
   return (
     <>
